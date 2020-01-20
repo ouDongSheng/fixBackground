@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserScoreRecodeMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserScoreRecode">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="relation_item" jdbcType="VARCHAR" property="relationItem" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="ratio" jdbcType="DOUBLE" property="ratio" />
+    <result column="transaction_score" jdbcType="DOUBLE" property="transactionScore" />
+    <result column="total_score" jdbcType="DOUBLE" property="totalScore" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="arrive_account_status" jdbcType="INTEGER" property="arriveAccountStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, type, relation_item, remarks, ratio, transaction_score, total_score, create_time,arrive_account_status
+  </sql>
+  <select id="findUserScore" resultType="java.lang.Double">
+    SELECT
+    s_user_score_recode.total_score
+    FROM
+    s_user_score_recode
+    WHERE user_id = #{userId}
+    ORDER BY s_user_score_recode.create_time DESC
+  </select>
+  <select id="listAdminUserScoreListVo" parameterType="com.logicalthining.endeshop.common.requestVo.userScore.UserScoreQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.userScore.AdminUserScoreListVo">
+    SELECT s_user_score_recode.relation_item     groupId,
+           (SELECT s_shopping_order.create_time
+            FROM s_shopping_order
+            WHERE s_shopping_order.group_id = s_user_score_recode.relation_item
+            LIMIT 1)                             createOrderTime,
+           s_user.account                        parentUserAccount,
+           (SELECT innerUser.account
+            FROM s_shopping_order,
+                 s_user innerUser
+            WHERE s_shopping_order.custom = innerUser.id
+              AND s_shopping_order.group_id = s_user_score_recode.relation_item
+            LIMIT 1)                             buyerUserAccount,
+           (SELECT s_shopping_order.payable
+            FROM s_shopping_order
+            WHERE s_shopping_order.group_id = s_user_score_recode.relation_item
+            LIMIT 1)                             orderMoney,
+           s_user_score_recode.transaction_score score
+    FROM s_user_score_recode,
+         s_user
+    WHERE s_user_score_recode.user_id = s_user.id
+      AND s_user.delete_status = 0
+      AND s_user_score_recode.arrive_account_status = 1
+    <if test="searchKey != null and searchKey != ''">
+      AND (s_user_score_recode.relation_item = #{searchKey}
+                OR s_user.account = #{searchKey}
+                OR exists(SELECT s_shopping_order.order_no
+                            FROM s_shopping_order,
+                            s_user buyerUser
+                            WHERE s_shopping_order.custom = buyerUser.id
+                            AND s_shopping_order.group_id = s_user_score_recode.relation_item
+                            AND buyerUser.account = #{searchKey})
+                            )
+    </if>
+    <if test="scoreType != null">
+      AND s_user_score_recode.type = #{scoreType}
+    </if>
+    <if test="startTime != null">
+      AND exists(SELECT s_shopping_order.order_no
+      FROM s_shopping_order
+      WHERE s_shopping_order.group_id = s_user_score_recode.relation_item
+      AND s_shopping_order.create_time &gt;= #{startTime}
+      )
+    </if>
+    <if test="endTime != null">
+      AND exists(SELECT s_shopping_order.order_no
+      FROM s_shopping_order
+      WHERE s_shopping_order.group_id = s_user_score_recode.relation_item
+      AND s_shopping_order.create_time &lt;= #{endTime}
+      )
+    </if>
+    ORDER BY s_user_score_recode.create_time DESC
+  </select>
+    <select id="listUserScoreRecodeVo" parameterType="com.logicalthining.endeshop.common.requestVo.userScore.UserScoreRecodeQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.userScore.UserScoreRecodeVo">
+        SELECT
+        s_user_score_recode.create_time createTime,
+        s_user_score_recode.type,
+        s_user_score_recode.ratio,
+        s_user_score_recode.transaction_score transactionScore,
+        s_user_score_recode.total_score totalScore
+        FROM
+        s_user_score_recode
+        <where>
+            <if test="userId != null">
+                AND s_user_score_recode.user_id = #{userId}
+            </if>
+            <if test="startTime != null">
+                AND s_user_score_recode.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND s_user_score_recode.create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY s_user_score_recode.create_time DESC
+    </select>
+    <select id="listAppScoreRecodeVo" parameterType="com.logicalthining.endeshop.common.requestVo.userScore.AppUserScoreRecodeQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.userScore.AppScoreRecodeVo">
+        SELECT
+        s_user.account parentUserAccount,
+        s_user.name parentUserAccountName,
+        s_user_score_recode.transaction_score score,
+        s_user_score_recode.create_time createTime
+        FROM
+        s_user_score_recode,s_user
+        WHERE s_user_score_recode.user_id = s_user.id
+        <if test="scoreType != null">
+            AND s_user_score_recode.type = #{scoreType}
+        </if>
+        <if test="currentUserId != null">
+            AND s_user_score_recode.user_id = #{currentUserId}
+        </if>
+        ORDER BY s_user_score_recode.create_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.RoleAuthMapper">
+    <insert id="batchInsert">
+        INSERT INTO s_role_auth (role_id, auth_id) VALUES
+        <foreach collection="roleAuthList" item="item" separator=",">
+            (#{item.roleId},#{item.authId})
+        </foreach>
+    </insert>
+    <select id="listByRoleIdSet" resultType="com.logicalthining.endeshop.entity.RoleAuth">
+        SELECT
+        s_role_auth.id, role_id roleId, auth_id authId
+        FROM
+        s_role_auth
+        WHERE 1=1
+        <foreach collection="roleIdSet" item="roleId" open="AND role_id IN (" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserScoreMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserScore">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="grand_total_score" jdbcType="DOUBLE" property="grandTotalScore" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, score, grand_total_score, update_time
+  </sql>
+</mapper>

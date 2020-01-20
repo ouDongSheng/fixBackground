@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.PartnerInfoMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.PartnerInfo">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="partner_name" jdbcType="VARCHAR" property="partnerName" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="partner_bank_card" jdbcType="VARCHAR" property="partnerBankCard" />
+    <result column="id_card_image_front" jdbcType="VARCHAR" property="idCardImageFront" />
+    <result column="id_card_image_back" jdbcType="VARCHAR" property="idCardImageBack" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, partner_name, telephone, partner_bank_card, id_card_image_front, id_card_image_back, 
+    create_time
+  </sql>
+  <select id="listNewPartnerUserInfo" parameterType="com.logicalthining.endeshop.common.requestVo.userScore.NewPartnerQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.userScore.NewPartnerUserInfo">
+    SELECT
+    s_user.id userId,
+    s_user.account,
+    s_partner_info.create_time promotionTime
+    FROM
+    s_partner_info,s_user
+    WHERE s_partner_info.user_id = s_user.id
+    AND s_user.role = 3
+    <if test="ancestorId != null">
+      AND EXISTS (
+                SELECT
+                s_user_ancestor.id
+                FROM
+                s_user_ancestor
+                WHERE s_user_ancestor.user_id = s_user.id
+                AND s_user_ancestor.ancester_id = #{ancestorId}
+      )
+    </if>
+    <if test="userAccount != null and userAccount != ''">
+      AND s_user.account = #{userAccount}
+    </if>
+    <if test="promotionTimeStartTime != null">
+      AND s_partner_info.create_time &gt;= #{promotionTimeStartTime}
+    </if>
+    <if test="promotionTimeEndTime != null">
+      AND s_partner_info.create_time &lt;= #{promotionTimeEndTime}
+    </if>
+    ORDER BY s_partner_info.create_time DESC
+  </select>
+</mapper>

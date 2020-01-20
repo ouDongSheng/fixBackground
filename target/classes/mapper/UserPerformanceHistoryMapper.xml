@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserPerformanceHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserPerformanceHistory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="relation_items" jdbcType="VARCHAR" property="relationItems" />
+    <result column="transaction_money" jdbcType="DOUBLE" property="transactionMoney" />
+    <result column="current_quarter" jdbcType="VARCHAR" property="currentQuarter" />
+    <result column="current_quarter_money" jdbcType="DOUBLE" property="currentQuarterMoney" />
+    <result column="current_money" jdbcType="DOUBLE" property="currentMoney" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, relation_items, transaction_money, current_quarter, current_quarter_money, 
+    current_money, create_time
+  </sql>
+</mapper>

@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ende_shengtai?serverTimezone=Asia/Shanghai&useSSL=false&characterEncoding=UTF-8&zeroDateTimeBehavior=CONVERT_TO_NULL
+    username: root
+    password: 1234
+  redis:
+    host: 127.0.0.1
+    password: foobared
+upload:
+  imgSavePath: "C:/upload/img"
+  fileSavePath: "C:/upload/img"
+share:
+  urlSuffix: http://shengtai.ende168.com

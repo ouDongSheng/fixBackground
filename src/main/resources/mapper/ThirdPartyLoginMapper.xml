@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.ThirdPartyLoginMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.ThirdPartyLogin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="third_type" jdbcType="INTEGER" property="thirdType" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="head_image" jdbcType="VARCHAR" property="headImage" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, third_type, open_id, nick_name, sex, province, city, head_image
+  </sql>
+</mapper>

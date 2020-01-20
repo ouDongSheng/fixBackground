@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserPerformanceCountMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserPerformanceCount">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="quarter" jdbcType="VARCHAR" property="quarter" />
+    <result column="current_quarter_money" jdbcType="DOUBLE" property="currentQuarterMoney" />
+    <result column="history_money" jdbcType="DOUBLE" property="historyMoney" />
+    <result column="archive_status" jdbcType="INTEGER" property="archiveStatus" />
+    <result column="score_ratio" jdbcType="DOUBLE" property="scoreRatio" />
+    <result column="score" jdbcType="DOUBLE" property="score" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, quarter, current_quarter_money, history_money, archive_status, score_ratio, score, update_time
+  </sql>
+  <select id="historyMoney" resultType="java.lang.Double">
+    SELECT
+    sum(s_user_performance_count.current_quarter_money)
+    FROM
+    s_user_performance_count
+    WHERE s_user_performance_count.user_id = #{userId}
+  </select>
+  <select id="listScorePoolVo" resultType="com.logicalthining.endeshop.common.responseVo.userScore.ScorePoolVo">
+    SELECT s_user.id partnerUserId,
+    s_user.account partnerAccount,
+    s_user_performance_count.quarter,
+    (s_user_child_count.child_count + 1) teamPersonCount ,
+    s_user_performance_count.current_quarter_money currentQuarterMoney,
+    s_user_performance_count.history_money totalMoney
+    FROM s_user_child_count,
+    s_user,
+    s_user_performance_count
+    WHERE s_user_child_count.user_id = s_user.id
+    AND s_user_performance_count.user_id = s_user.id
+    AND s_user.role = 3
+    and s_user.delete_status = 0
+    AND EXISTS(
+        SELECT parentUserId
+        FROM (
+          SELECT s_user_relation.parent_user_id parentUserId,
+          COUNT(s_user_relation.user_id) partnerUserCount
+          FROM s_user_relation,
+          s_user innerUser
+          WHERE s_user_relation.user_id = innerUser.id
+          AND innerUser.role = 3
+          GROUP BY s_user_relation.parent_user_id
+        ) temp
+        WHERE temp.parentUserId = s_user.id
+        AND temp.partnerUserCount >= 2
+    )
+    <if test="searchKey != null and searchKey != ''">
+      AND s_user.account = #{searchKey}
+    </if>
+    <if test="quarter != null and quarter != ''">
+      AND s_user_performance_count.quarter = #{quarter}
+    </if>
+    <if test="startLimitMoney != null">
+      AND s_user_performance_count.current_quarter_money &gt;= #{startLimitMoney}
+    </if>
+    <if test="endLimitMoney != null">
+      AND s_user_performance_count.current_quarter_money &lt; #{endLimitMoney}
+    </if>
+    ORDER BY s_user_performance_count.update_time DESC,s_user_performance_count.id DESC
+  </select>
+  <select id="listScorePoolInfoVo" resultType="com.logicalthining.endeshop.common.responseVo.userScore.ScorePoolInfoVo">
+    SELECT
+    s_user.id partnerUserId,
+    s_user.account partnerAccount,
+    s_user_performance_count.quarter,
+    s_user_performance_count.current_quarter_money currentQuarterMoney,
+    s_user_performance_count.history_money historyMoney,
+    s_user_performance_total.grand_total_performance sales,
+    s_user_performance_count.archive_status archiveStatus,
+    s_user_performance_count.score_ratio ratio,
+    s_user_performance_count.score currentScore,
+    s_partner_info.partner_name partnerName,
+    s_partner_info.partner_bank_card partnerBankCard,
+    s_user_score.grand_total_score totalScore
+    FROM
+    s_user_performance_count,s_user,s_user_child_count,s_partner_info,s_user_score,s_user_performance_total
+    WHERE
+    s_user_performance_count.user_id = s_user.id
+    AND s_user_child_count.user_id = s_user.id
+    AND s_partner_info.user_id = s_user.id
+    AND s_user_score.user_id = s_user.id
+    AND s_user_performance_total.user_id = s_user.id
+    AND s_user.role = 3
+    and s_user.delete_status = 0
+    AND EXISTS(
+      SELECT parentUserId
+      FROM (
+        SELECT s_user_relation.parent_user_id parentUserId,
+        COUNT(s_user_relation.user_id) partnerUserCount
+        FROM s_user_relation,
+        s_user innerUser
+        WHERE s_user_relation.user_id = innerUser.id
+        AND innerUser.role = 3
+        and innerUser.delete_status = 0
+        GROUP BY s_user_relation.parent_user_id
+      ) temp
+      WHERE temp.parentUserId = s_user.id
+      AND temp.partnerUserCount >= 2
+    )
+    <if test="ancestorId != null">
+      AND (EXISTS (
+            SELECT s_user_ancestor.id
+            FROM
+            s_user_ancestor
+            WHERE s_user_ancestor.user_id = s_user.id
+            AND s_user_ancestor.ancester_id = #{ancestorId}
+      )
+        OR s_user.id = #{ancestorId}
+      )
+    </if>
+    <if test="searchKey != null and searchKey != ''">
+      AND s_user.account = #{searchKey}
+    </if>
+    <if test="quarter != null and quarter != ''">
+      AND s_user_performance_count.quarter = #{quarter}
+    </if>
+    ORDER BY s_user_performance_count.update_time DESC
+  </select>
+  <select id="listNotArchivePerformance" resultMap="BaseResultMap">
+    SELECT
+    s_user_performance_count.id, s_user_performance_count.user_id, s_user_performance_count.quarter,
+    s_user_performance_count.current_quarter_money,
+    s_user_performance_count.history_money,
+    s_user_performance_count.archive_status,
+    s_user_performance_count.score_ratio,
+    s_user_performance_count.score,
+    s_user_performance_count.update_time
+    FROM s_user_child_count,
+    s_user,
+    s_user_performance_count
+    WHERE s_user_child_count.user_id = s_user.id
+    AND s_user_performance_count.user_id = s_user.id
+    AND s_user.role = 3
+    AND s_user_child_count.partner_child_count &gt;= 2
+    AND s_user_performance_count.archive_status = 0
+    <if test="quarter != null and quarter != ''">
+        AND s_user_performance_count.quarter = #{quarter}
+    </if>
+  </select>
+  <select id="findTeamCountByPerformanceRange" resultType="java.lang.Integer">
+    SELECT
+    COUNT(DISTINCT s_user_performance_count.user_id)
+    FROM s_user_child_count,
+    s_user,
+    s_user_performance_count
+    WHERE s_user_child_count.user_id = s_user.id
+    AND s_user_performance_count.user_id = s_user.id
+    AND s_user.role = 3
+    AND s_user_child_count.partner_child_count &gt;= 2
+    <if test="limitStart != null">
+      AND s_user_performance_count.current_quarter_money &gt;= #{limitStart}
+    </if>
+    <if test="limitEnd != null">
+      AND s_user_performance_count.current_quarter_money &lt;= #{limitEnd}
+    </if>
+    <if test="quarter != null and quarter != ''">
+      AND s_user_performance_count.quarter = #{quarter}
+    </if>
+  </select>
+</mapper>

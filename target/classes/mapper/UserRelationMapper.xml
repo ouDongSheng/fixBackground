@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserRelationMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserRelation">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="parent_user_id" jdbcType="INTEGER" property="parentUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, parent_user_id, create_time
+  </sql>
+  <select id="findUserChildCountVo" resultType="com.logicalthining.endeshop.common.responseVo.userRelation.UserChildCountVo">
+    SELECT
+    s_user_relation.parent_user_id userId,
+    sum(s_user.role = 1) teamCommonUserCount,
+    sum(s_user.role = 2) teamVIPUserCount,
+    sum(s_user.role = 3) teamPartnerUserCount
+    FROM
+    s_user_relation,s_user
+    WHERE s_user_relation.user_id = s_user.id
+    AND s_user.delete_status = 0
+    AND s_user_relation.parent_user_id = #{parentId}
+  </select>
+  <select id="listAppUserChildUserListVo" parameterType="com.logicalthining.endeshop.common.requestVo.user.ChildUserQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.user.AppUserChildUserListVo">
+    SELECT
+    s_user.name,
+    s_user.account,
+    s_user_relation.create_time bindTime,
+    (SELECT s_capital_flow_user.transaction_money
+      FROM
+      s_capital_flow_user,s_shopping_order
+      WHERE
+      s_capital_flow_user.type = 1
+      AND s_capital_flow_user.relation_item = s_shopping_order.group_id
+      AND s_shopping_order.custom = s_user.id
+      LIMIT 1
+     ) money
+    FROM
+    s_user_relation,s_user
+    WHERE s_user_relation.user_id = s_user.id
+    <if test="parentUserId != null">
+      AND s_user_relation.parent_user_id = #{parentUserId}
+    </if>
+    <if test="childRole != null">
+      AND s_user.role = #{childRole}
+    </if>
+    <if test="startTime != null">
+      AND s_user_relation.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null">
+      AND s_user_relation.create_time &lt;= #{endTime}
+    </if>
+    ORDER BY s_user_relation.create_time DESC
+  </select>
+</mapper>

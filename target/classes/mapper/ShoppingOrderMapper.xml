@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.ShoppingOrderMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.ShoppingOrder">
+    <id column="order_no" jdbcType="VARCHAR" property="orderNo" />
+    <result column="custom" jdbcType="VARCHAR" property="custom" />
+    <result column="shops" jdbcType="VARCHAR" property="shops" />
+    <result column="goods_id" jdbcType="VARCHAR" property="goodsId" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="product_amount_total" jdbcType="DOUBLE" property="productAmountTotal" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="payChannel" />
+    <result column="pay_record" jdbcType="VARCHAR" property="payRecord" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
+    <result column="good_price" jdbcType="DOUBLE" property="goodPrice" />
+    <result column="order_amount_total" jdbcType="DOUBLE" property="orderAmountTotal" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="payable" jdbcType="DOUBLE" property="payable" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_no, custom, shops, goods_id, count, state, product_amount_total, pay_channel, 
+    pay_record, transaction_id, good_price, order_amount_total, pay_time, group_id, payable, create_time,
+    remarks,details_json,order_coupon
+  </sql>
+  <select id="listShareManageVo" parameterType="com.logicalthining.endeshop.common.requestVo.shareManage.ShareManageQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.shareManage.ShareManageVo">
+    SELECT s_capital_flow_user.relation_item     groupId,
+    (SELECT s_shopping_order.create_time
+    FROM s_shopping_order
+    WHERE s_shopping_order.group_id = s_capital_flow_user.relation_item
+    LIMIT 1)                             createOrderTime,
+    s_user.account                        parentUserAccount,
+    (SELECT innerUser.account
+    FROM s_shopping_order,
+    s_user innerUser
+    WHERE s_shopping_order.custom = innerUser.id
+    AND s_shopping_order.group_id = s_capital_flow_user.relation_item
+    LIMIT 1)                             buyerUserAccount,
+    (
+    SELECT s_shopping_order.payable
+    FROM s_shopping_order
+    WHERE s_shopping_order.group_id = s_capital_flow_user.relation_item
+    LIMIT 1
+    )                                     orderMoney,
+    s_capital_flow_user.transaction_money income
+    FROM s_capital_flow_user,
+    s_user
+    WHERE s_capital_flow_user.user_id = s_user.id
+    AND s_user.delete_status = 0
+    AND s_capital_flow_user.type = 1
+    and s_capital_flow_user.arrive_account_status = 1
+    <if test="searchKey != null and searchKey != ''">
+      AND (s_user.account = #{searchKey} OR exists(SELECT s_shopping_order.order_no
+      FROM s_shopping_order,
+      s_user buyerUser
+      WHERE s_shopping_order.custom = buyerUser.id
+      AND s_shopping_order.group_id = s_capital_flow_user.relation_item
+      AND (s_shopping_order.group_id = #{searchKey} OR buyerUser.account = #{searchKey})
+      ))
+    </if>
+    <if test="startTime != null">
+      AND exists(SELECT s_shopping_order.order_no
+      FROM s_shopping_order
+      WHERE s_shopping_order.group_id = s_capital_flow_user.relation_item
+      AND s_shopping_order.create_time &gt;= #{startTime}
+      )
+    </if>
+    <if test="endTime != null">
+      AND exists(SELECT s_shopping_order.order_no
+      FROM s_shopping_order
+      WHERE s_shopping_order.group_id = s_capital_flow_user.relation_item
+      AND s_shopping_order.create_time &lt;= #{endTime}
+      )
+    </if>
+    ORDER BY s_capital_flow_user.create_time DESC
+  </select>
+  <select id="adminListPage" parameterType="com.logicalthining.endeshop.common.requestVo.order.AdminOrderQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.order.AdminOrderListVo">
+    SELECT s_shopping_order.group_id groupId
+    FROM s_shopping_order,
+         s_user
+    WHERE s_shopping_order.custom = s_user.id
+    <if test="searchKey != null and searchKey != ''">
+      AND (group_id = #{searchKey} OR exists(SELECT s_immediate_payment_order.order_no
+      FROM s_immediate_payment_order
+      WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+      AND s_immediate_payment_order.rec_tel = #{searchKey}))
+    </if>
+    <if test="startTime != null">
+      AND s_shopping_order.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null">
+      AND s_shopping_order.create_time &lt;= #{endTime}
+    </if>
+    <if test="orderState != null">
+      <if test="orderState == 1">
+        AND s_shopping_order.state = 0
+      </if>
+      <if test="orderState == 2">
+        AND s_shopping_order.state = 983042
+        AND NOT EXISTS (SELECT s_immediate_payment_order.order_no
+                        FROM s_immediate_payment_order
+                        WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+                        AND s_immediate_payment_order.state = 983042
+        )
+      </if>
+      <if test="orderState == 3">
+        AND s_shopping_order.state = 983042
+        AND EXISTS (SELECT s_immediate_payment_order.order_no
+                        FROM s_immediate_payment_order
+                        WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+                        AND s_immediate_payment_order.state = 983042
+        )
+        AND NOT EXISTS (
+                    SELECT s_receiving_goods_order.order_no
+                    FROM s_receiving_goods_order,s_immediate_payment_order
+                    WHERE s_receiving_goods_order.front_order = s_immediate_payment_order.order_no
+                    AND s_immediate_payment_order.front_order = s_shopping_order.order_no
+                    AND s_receiving_goods_order.state = 983042
+        )
+      </if>
+      <if test="orderState == 4">
+        AND s_shopping_order.state = 983042
+        AND EXISTS (SELECT s_immediate_payment_order.order_no
+        FROM s_immediate_payment_order
+        WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_immediate_payment_order.state = 983042
+        )
+        AND EXISTS (
+        SELECT s_receiving_goods_order.order_no
+        FROM s_receiving_goods_order,s_immediate_payment_order
+        WHERE s_receiving_goods_order.front_order = s_immediate_payment_order.order_no
+        AND s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_receiving_goods_order.state = 983042
+        )
+      </if>
+      <if test="orderState == 5">
+        AND s_shopping_order.state = 983041
+      </if>
+    </if>
+
+    GROUP BY s_shopping_order.group_id
+    ORDER BY s_shopping_order.create_time DESC
+  </select>
+  <select id="listByGroupIdSet" resultMap="BaseResultMap">
+    SELECT
+    order_no, custom, shops, goods_id, count, state, product_amount_total, pay_channel, pay_record, transaction_id,
+    good_price, order_amount_total, pay_time, details_json detailsJson, group_id, payable,
+    order_coupon orderCoupon, create_time, remarks
+    FROM
+    s_shopping_order
+    <foreach collection="groupIdSet" item="groupId" open="WHERE group_id IN (" close=")" separator=",">
+      #{groupId}
+    </foreach>
+  </select>
+  <select id="listByOrderNoSet" resultMap="BaseResultMap">
+    SELECT
+    order_no, custom, shops, goods_id, count, state, product_amount_total, pay_channel, pay_record, transaction_id,
+    good_price, order_amount_total, pay_time, details_json detailsJson, group_id, payable, order_coupon orderCoupon, create_time, remarks
+    FROM
+    s_shopping_order
+    <foreach collection="orderNoSet" item="orderNo" open="WHERE order_no IN (" close=")" separator=",">
+      #{orderNo}
+    </foreach>
+  </select>
+  <select id="listSaleCountProvinceVo" resultType="com.logicalthining.endeshop.common.responseVo.count.SaleCountProvinceVo">
+    SELECT temp.recProvince province,
+           sum(temp.payable) sales
+    FROM (SELECT s_shopping_order.group_id              groupId,
+                 s_shopping_order.create_time           createTime,
+                 s_shopping_order.payable               payable,
+                 s_immediate_payment_order.rec_province recProvince
+          FROM s_shopping_order,
+               s_immediate_payment_order
+          WHERE s_shopping_order.order_no = s_immediate_payment_order.front_order
+            AND s_shopping_order.state = 983042
+            AND s_shopping_order.transaction_id IS NOT NULL
+            <if test="startTime != null">
+              AND s_shopping_order.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+              AND s_shopping_order.create_time &lt;= #{endTime}
+            </if>
+          GROUP BY s_shopping_order.group_id) temp
+    GROUP BY temp.recProvince
+  </select>
+  <select id="listAppOrderListVo" parameterType="com.logicalthining.endeshop.common.requestVo.order.APPOrderQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.order.AppOrderListVo">
+    SELECT s_shopping_order.group_id groupId
+    FROM s_shopping_order,
+    s_user
+    WHERE s_shopping_order.custom = s_user.id
+    AND s_shopping_order.state != 0
+    <if test="currentUserId != null">
+      AND s_shopping_order.custom = #{currentUserId}
+    </if>
+    <if test="orderState != null">
+      <if test="orderState == 1">
+        AND s_shopping_order.state = 0
+      </if>
+      <if test="orderState == 2">
+        AND s_shopping_order.state = 983042
+        AND NOT EXISTS (SELECT s_immediate_payment_order.order_no
+        FROM s_immediate_payment_order
+        WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_immediate_payment_order.state = 983042
+        )
+      </if>
+      <if test="orderState == 3">
+        AND s_shopping_order.state = 983042
+        AND EXISTS (SELECT s_immediate_payment_order.order_no
+        FROM s_immediate_payment_order
+        WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_immediate_payment_order.state = 983042
+        )
+        AND NOT EXISTS (
+        SELECT s_receiving_goods_order.order_no
+        FROM s_receiving_goods_order,s_immediate_payment_order
+        WHERE s_receiving_goods_order.front_order = s_immediate_payment_order.order_no
+        AND s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_receiving_goods_order.state = 983042
+        )
+      </if>
+      <if test="orderState == 4">
+        AND s_shopping_order.state = 983042
+        AND EXISTS (SELECT s_immediate_payment_order.order_no
+        FROM s_immediate_payment_order
+        WHERE s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_immediate_payment_order.state = 983042
+        )
+        AND EXISTS (
+        SELECT s_receiving_goods_order.order_no
+        FROM s_receiving_goods_order,s_immediate_payment_order
+        WHERE s_receiving_goods_order.front_order = s_immediate_payment_order.order_no
+        AND s_immediate_payment_order.front_order = s_shopping_order.order_no
+        AND s_receiving_goods_order.state = 983042
+        )
+      </if>
+      <if test="orderState == 5">
+        AND s_shopping_order.state = 983041
+      </if>
+    </if>
+    <if test="groupId != null and groupId != ''">
+      AND s_shopping_order.group_id = #{groupId}
+    </if>
+    GROUP BY s_shopping_order.group_id
+    ORDER BY s_shopping_order.create_time DESC
+  </select>
+  <select id="listProductSaleVo" resultType="com.logicalthining.endeshop.common.responseVo.count.ProductSaleVo">
+    SELECT
+    s_goods.product_id productId,
+    sum(s_shopping_order.count) salesVolume
+    FROM
+    s_shopping_order,s_goods
+    WHERE s_shopping_order.goods_id = s_goods.id
+    AND s_shopping_order.state = 983042 AND s_shopping_order.transaction_id IS NOT NULL
+    <foreach collection="productIdSet" item="productId" open="AND s_goods.product_id IN (" close=")" separator=",">
+      #{productId}
+    </foreach>
+    GROUP BY s_goods.product_id
+  </select>
+  <select id="countPerformance" resultType="java.lang.Double">
+    SELECT
+    sum(temp.payable)
+    FROM
+    (
+      SELECT
+      group_id,payable
+      FROM
+      s_shopping_order
+      WHERE state = 983042 AND transaction_id IS NOT NULL
+      <if test="startTime != null">
+        AND s_shopping_order.create_time &gt;= #{startTime}
+      </if>
+      <if test="endTime != null">
+        AND s_shopping_order.create_time &lt;= #{endTime}
+      </if>
+      GROUP BY group_id
+    ) temp
+  </select>
+  <select id="countUserPayedMoney" resultType="java.lang.Integer">
+    SELECT
+    count(DISTINCT s_shopping_order.group_id)
+    FROM
+    s_shopping_order
+    WHERE s_shopping_order.custom = #{userId}
+    AND s_shopping_order.state = 983042
+    AND s_shopping_order.payable &gt;= #{limitMoney}
+  </select>
+</mapper>

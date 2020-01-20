@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.CommentMapper">
+    <select id="listAll" parameterType="com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.entity.Comment">
+        SELECT
+        id,
+        order_id,
+        product_id,
+        grade,
+        time
+        FROM
+        s_comment
+        WHERE
+        ORDER BY time, grade DESC
+    </select>
+</mapper>

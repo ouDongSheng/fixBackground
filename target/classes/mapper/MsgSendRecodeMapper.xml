@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.MsgSendRecodeMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.MsgSendRecode">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="msg_key" jdbcType="VARCHAR" property="msgKey" />
+    <result column="msg_type" jdbcType="INTEGER" property="msgType" />
+    <result column="msk_value" jdbcType="VARCHAR" property="mskValue" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="limit_time" jdbcType="TIMESTAMP" property="limitTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, msg_key, msg_type, msk_value, send_time, limit_time
+  </sql>
+  <delete id="deleteLimitedMsg">
+    DELETE
+    FROM
+    s_msg_send_recode
+    WHERE now() > s_msg_send_recode.limit_time
+  </delete>
+  <select id="findByKeyAndType" resultMap="BaseResultMap">
+    SELECT
+    id, msg_key, msg_type, msk_value, send_time, limit_time
+    FROM
+    s_msg_send_recode
+    WHERE msg_key = #{key} AND msg_type = #{type}
+    ORDER BY send_time DESC
+    LIMIT 1
+  </select>
+</mapper>

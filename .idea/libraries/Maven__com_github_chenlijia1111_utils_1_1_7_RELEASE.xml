@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.github.chenlijia1111:utils:1.1.7-RELEASE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/chenlijia1111/utils/1.1.7-RELEASE/utils-1.1.7-RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/chenlijia1111/utils/1.1.7-RELEASE/utils-1.1.7-RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/github/chenlijia1111/utils/1.1.7-RELEASE/utils-1.1.7-RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

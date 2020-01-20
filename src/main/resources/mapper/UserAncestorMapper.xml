@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserAncestorMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserAncestor">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="ancester_id" jdbcType="INTEGER" property="ancesterId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, ancester_id, create_time
+  </sql>
+  <select id="findUserChildCountVo" resultType="com.logicalthining.endeshop.common.responseVo.userRelation.UserChildCountVo">
+    SELECT
+    s_user_ancestor.ancester_id userId,
+    sum(s_user.role = 1 or null ) teamCommonUserCount,
+    sum(s_user.role = 2 or null ) teamVIPUserCount,
+    sum(s_user.role = 3 or null ) teamPartnerUserCount
+    FROM
+    s_user_ancestor,s_user
+    WHERE s_user_ancestor.user_id = s_user.id
+    AND s_user.delete_status = 0
+    AND s_user_ancestor.ancester_id = #{parentId}
+  </select>
+</mapper>

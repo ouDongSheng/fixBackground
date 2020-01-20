@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserChildCountMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserChildCount">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="child_count" jdbcType="INTEGER" property="childCount" />
+    <result column="partner_child_count" jdbcType="INTEGER" property="partnerChildCount" />
+    <result column="common_user_count" jdbcType="INTEGER" property="commonUserCount" />
+    <result column="vip_user_count" jdbcType="INTEGER" property="vipUserCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_id, child_count, partner_child_count, common_user_count, vip_user_count
+  </sql>
+</mapper>

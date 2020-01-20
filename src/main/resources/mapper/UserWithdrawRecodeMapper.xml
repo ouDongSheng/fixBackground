@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.UserWithdrawRecodeMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.UserWithdrawRecode">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="withdraw_money" jdbcType="DOUBLE" property="withdrawMoney" />
+    <result column="withdraw_account" jdbcType="VARCHAR" property="withdrawAccount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="process_result" jdbcType="VARCHAR" property="processResult" />
+    <result column="process_admin" jdbcType="INTEGER" property="processAdmin" />
+    <result column="process_time" jdbcType="TIMESTAMP" property="processTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, withdraw_money, withdraw_account, status, create_time, process_result,
+    process_admin, process_time
+  </sql>
+  <select id="listAdminWithdrawListVo" parameterType="com.logicalthining.endeshop.common.requestVo.user.AdminWithdrawRecodeQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.withdraw.AdminWithdrawListVo">
+    SELECT s_user_withdraw_recode.id,
+           s_user_withdraw_recode.create_time                                                           createTime,
+           (SELECT s_user.account FROM s_user WHERE s_user_withdraw_recode.user_id = s_user.id LIMIT 1) userAccount,
+           s_user_withdraw_recode.withdraw_money                                                        withdrawMoney,
+           s_user_withdraw_recode.withdraw_account                                                      withdrawAccount,
+           s_user_withdraw_recode.status,
+           (SELECT s_admin.name
+            FROM s_admin
+            WHERE s_user_withdraw_recode.process_admin = s_admin.id
+            LIMIT 1)                                                                                    processAdminName,
+           s_user_withdraw_recode.process_time                                                          processTime
+    FROM s_user_withdraw_recode
+    <where>
+      <if test="account != null and account != ''">
+        AND (s_user_withdraw_recode.withdraw_account = #{account} OR exists(SELECT s_user.id
+        FROM s_user
+        WHERE s_user_withdraw_recode.user_id = s_user.id
+        AND s_user.account = #{account}))
+      </if>
+      <if test="status != null">
+        AND s_user_withdraw_recode.status = #{status}
+      </if>
+      <if test="startTime != null">
+        AND s_user_withdraw_recode.create_time &gt;= #{startTime}
+      </if>
+      <if test="endTime != null">
+        AND s_user_withdraw_recode.create_time &lt;= #{endTime}
+      </if>
+    </where>
+    ORDER BY s_user_withdraw_recode.create_time DESC
+  </select>
+</mapper>

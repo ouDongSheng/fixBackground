@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.SystemCountMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.SystemCount">
+    <id column="count_key" jdbcType="VARCHAR" property="countKey" />
+    <result column="count_value" jdbcType="DOUBLE" property="countValue" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    count_key, count_value, update_time
+  </sql>
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.RoleMapper">
+    <select id="listPage" parameterType="com.logicalthining.endeshop.common.requestVo.role.QueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.role.RoleVo">
+        SELECT
+        id, role_name roleName, open_status openStatus, update_user updateUser, update_time updateTime
+        FROM
+        s_role
+        WHERE 1=1
+        <if test="roleName != null and roleName != ''">
+            AND s_role.role_name = #{roleName}
+        </if>
+        <if test="openStatus != null">
+            AND s_role.open_status = #{openStatus}
+        </if>
+        <if test="limitDays != null">
+            AND timestampdiff(DAY, update_time, now()) &lt;= #{limitDays}
+        </if>
+        ORDER BY s_role.update_time DESC
+    </select>
+    <update id="batchUpdateState" parameterType="com.logicalthining.endeshop.common.requestVo.BatchUpdateStateParams">
+        UPDATE
+        s_role
+        SET open_status = #{state}
+        <foreach collection="idList" item="id" open="WHERE id IN (" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

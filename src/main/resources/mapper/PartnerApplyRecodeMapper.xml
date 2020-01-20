@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.PartnerApplyRecodeMapper">
+  <resultMap id="BaseResultMap" type="com.logicalthining.endeshop.entity.PartnerApplyRecode">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="partner_name" jdbcType="VARCHAR" property="partnerName" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="partner_bank_card" jdbcType="VARCHAR" property="partnerBankCard" />
+    <result column="id_card_image_front" jdbcType="VARCHAR" property="idCardImageFront" />
+    <result column="id_card_image_back" jdbcType="VARCHAR" property="idCardImageBack" />
+    <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
+    <result column="review_status" jdbcType="INTEGER" property="reviewStatus" />
+    <result column="review_admin" jdbcType="INTEGER" property="reviewAdmin" />
+    <result column="review_time" jdbcType="TIMESTAMP" property="reviewTime" />
+  </resultMap>
+  <resultMap id="BaseResultMapVo" type="com.logicalthining.endeshop.common.responseVo.partnerApply.PartnerApplyVo" extends="BaseResultMap"></resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, partner_name,telephone, partner_bank_card, id_card_image_front, id_card_image_back,
+    apply_time, review_status, review_admin, review_time
+  </sql>
+  <select id="listPartnerApplyVo" parameterType="com.logicalthining.endeshop.common.requestVo.partnerApply.QueryParams" resultMap="BaseResultMapVo">
+    SELECT
+    s_partner_apply_recode.id, user_id, partner_name, telephone, partner_bank_card, id_card_image_front,
+    id_card_image_back, apply_time, review_status, review_admin, review_time,
+    s_user.account,
+    s_user.create_time registerTime
+    FROM
+    s_partner_apply_recode,s_user
+    WHERE s_partner_apply_recode.user_id = s_user.id
+    and s_user.delete_status = 0
+    <if test="account != null and account != ''">
+      AND s_user.account = #{account}
+    </if>
+    <if test="state != null">
+      AND s_partner_apply_recode.review_status = #{state}
+    </if>
+    <if test="startTime != null">
+      AND s_partner_apply_recode.apply_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null">
+      AND s_partner_apply_recode.apply_time &lt;= #{endTime}
+    </if>
+    ORDER BY s_partner_apply_recode.apply_time DESC
+  </select>
+</mapper>

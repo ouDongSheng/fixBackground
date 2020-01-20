@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logicalthining.endeshop.dao.CommentInfoMapper">
+    <insert id="batchAdd" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO s_comment_info (id, user_id, content, images, comment_id, parent_id) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.id}, #{item.userId}, #{item.content}, #{item.images}, #{item.commentId}, #{item.parentId})
+        </foreach>
+    </insert>
+
+    <select id="getCommentInfoById" resultMap="CommentInfoResultMapVo">
+    SELECT id, user_id, content, images, comment_id, parent_id
+      FROM s_comment_info
+     WHERE
+    <foreach collection="commentIdSet" item="commentId" open="AND s_comment_info.comment_id IN (" close=")" separator=",">
+        #{commentId}
+    </foreach>
+    </select>
+
+    <resultMap id="CommentInfoResultMapVo" type="com.logicalthining.endeshop.entity.CommentInfo">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="images" jdbcType="VARCHAR" property="images"/>
+        <result column="comment_id" jdbcType="VARCHAR" property="commentId"/>
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+    </resultMap>
+</mapper>
