@@ -36,20 +36,21 @@ public class CommentServiceImpl implements CommentServiceI {
     @Override
     public List<CommentListVo> listAll(CommentQueryParams params) {
         params = PropertyCheckUtil.transferObjectNotNull(params, true);
-        List<CommentListVo> commentListVos = commentMapper.listAll(params);
+        List<Comment> commentListVos = commentMapper.listAll(params);
 
         Set commentIdSet = new HashSet<>();
-        for (CommentListVo commentListVo : commentListVos) {
+        for (Comment commentListVo : commentListVos) {
             commentIdSet.add(commentListVo.getId());
         }
 
         List<CommentInfoListVo> commentInfoList = commentInfoMapper.getCommentInfoById(commentIdSet);
 
-        for (CommentListVo commentListVo : commentListVos) {
-            List<CommentInfoListVo> collect = commentInfoList.stream().filter(e -> Objects.equals(e.getCommentId(), commentListVo.getId())).collect(Collectors.toList());
-            commentListVo.setCommentInfoListVo(collect);
-        }
+//        for (CommentListVo commentListVo : commentListVos) {
+//            List<CommentInfoListVo> collect = commentInfoList.stream().filter(e -> Objects.equals(e.getCommentId(), commentListVo.getId())).collect(Collectors.toList());
+////            commentListVo.setCommentInfoListVo(collect);
+//        }
 
-        return commentListVos;
+//        return commentListVos;
+        return null;
     }
 }

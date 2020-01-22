@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface CommentMapper extends Mapper<Comment> {
 
-    List<CommentListVo> listAll(CommentQueryParams params);
+    List<Comment> listAll(CommentQueryParams params);
 }

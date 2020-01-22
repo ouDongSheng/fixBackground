@@ -9,7 +9,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import tk.mybatis.spring.annotation.MapperScan;
 
 /**
- * 恩德生态项目
+ * 清洗后台项目
  * 启动时间 2019-10-29
  *
  * @since 下午 7:44 2019/10/29 0029

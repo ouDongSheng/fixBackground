@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by Administrator on 2020/1/9.
@@ -29,11 +30,11 @@ public class Comment {
     @ApiModelProperty("订单id")
     @PropertyCheck(name = "订单id")
     @Column(name = "order_id")
-    private String order_id;
+    private String orderId;
 
     @ApiModelProperty("产品id")
     @PropertyCheck(name = "产品id")
-    private String product_id;
+    private String productId;
 
     @ApiModelProperty("评论星级")
     @PropertyCheck(name = "评论星级")
@@ -43,5 +44,5 @@ public class Comment {
     @ApiModelProperty("评论时间")
     @PropertyCheck(name = "评论时间")
     @Column(name = "time")
-    private String time;
+    private Date time;
 }

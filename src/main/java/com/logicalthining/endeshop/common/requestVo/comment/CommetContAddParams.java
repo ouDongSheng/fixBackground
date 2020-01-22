@@ -1,5 +1,6 @@
 package com.logicalthining.endeshop.common.requestVo.comment;
 
+import java.util.Date;
 import com.github.chenlijia1111.utils.core.annos.PropertyCheck;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -32,10 +33,6 @@ public class CommetContAddParams {
     @ApiModelProperty("评论星级")
     @PropertyCheck(name = "评论星级")
     private String grade;
-
-    @ApiModelProperty("评论时间")
-    @PropertyCheck(name = "评论时间")
-    private String time;
 
     @ApiModelProperty(value = "评论详情")
     @PropertyCheck(name = "评论详情")

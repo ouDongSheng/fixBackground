@@ -15,6 +15,7 @@ import com.logicalthining.endeshop.service.CommentServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,13 +37,14 @@ public class CommentBiz {
             return result;
         }
 
+        Date currentTime = new Date();
         //TODO 订单id ?
         Comment comment = new Comment()
                 .setId(params.getId())
-                .setOrder_id(params.getOrderId())
-                .setProduct_id(params.getProductId())
+                .setOrderId(params.getOrderId())
+                .setProductId(params.getProductId())
                 .setGrade(params.getGrade())
-                .setTime(params.getTime());
+                .setTime(currentTime);
 
         //添加评论
         commentService.add(comment);

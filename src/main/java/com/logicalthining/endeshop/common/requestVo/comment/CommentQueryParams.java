@@ -12,4 +12,15 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CommentQueryParams extends PageAbleVo {
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    private String productId;
+
 }

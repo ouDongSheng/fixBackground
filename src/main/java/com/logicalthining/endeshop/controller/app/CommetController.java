@@ -7,10 +7,7 @@ import com.logicalthining.endeshop.common.requestVo.comment.CommetContAddParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by Administrator on 2020/1/8.
@@ -34,10 +31,10 @@ public class CommetController {
     }
 
     /**
-     * 全部评论
+     * 商品全部评论
      *
      **/
-    @PostMapping(value = "add")
+    @GetMapping(value = "all")
     @ApiOperation(value = "查询全部商品评论")
     public Result listAll(CommentQueryParams commentQueryParams) {
         return commentBiz.listAll(commentQueryParams);

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,8 +34,5 @@ public class CommentListVo {
 
     @ApiModelProperty("评论时间")
     @PropertyCheck(name = "评论时间")
-    private String time;
-
-    private List<CommentInfoListVo> commentInfoListVo;
-
+    private Date time;
 }
