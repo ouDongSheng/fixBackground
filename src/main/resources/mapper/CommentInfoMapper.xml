@@ -11,13 +11,14 @@
     <select id="getCommentInfoById" resultMap="CommentInfoResultMapVo">
     SELECT id, user_id, content, images, comment_id, parent_id
       FROM s_comment_info
-     WHERE
-    <foreach collection="commentIdSet" item="commentId" open="AND s_comment_info.comment_id IN (" close=")" separator=",">
-        #{commentId}
-    </foreach>
+     <where>
+        <foreach collection="commentIdSet" item="commentId" open="AND s_comment_info.comment_id IN (" close=")" separator=",">
+            #{commentId}
+        </foreach>
+     </where>
     </select>
 
-    <resultMap id="CommentInfoResultMapVo" type="com.logicalthining.endeshop.entity.CommentInfo">
+    <resultMap id="CommentInfoResultMapVo" type="com.logicalthining.endeshop.common.responseVo.comment.CommentInfoListVo">
         <result column="id" jdbcType="VARCHAR" property="id"/>
         <result column="user_id" jdbcType="VARCHAR" property="userId"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>

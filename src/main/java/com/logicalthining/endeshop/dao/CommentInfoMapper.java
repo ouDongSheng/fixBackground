@@ -15,6 +15,6 @@ public interface CommentInfoMapper extends Mapper<CommentInfo> {
 
     Integer batchAdd(@Param("list") List<CommentInfo> list);
 
-    List<CommentInfoListVo> getCommentInfoById(Set commentIdSet);
+    List<CommentInfoListVo> getCommentInfoById(@Param("commentIdSet") Set<String> commentIdSet);
 
 }

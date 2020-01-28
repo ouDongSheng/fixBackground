@@ -17,22 +17,20 @@ import java.util.List;
 @Getter
 public class CommentListVo {
     @ApiModelProperty("评论id")
-    @PropertyCheck(name = "评论id")
     private String id;
 
     @ApiModelProperty("订单id")
-    @PropertyCheck(name = "订单id")
     private String orderId;
 
     @ApiModelProperty("产品id")
-    @PropertyCheck(name = "产品id")
     private String productId;
 
     @ApiModelProperty("评论星级")
-    @PropertyCheck(name = "评论星级")
     private String grade;
 
     @ApiModelProperty("评论时间")
-    @PropertyCheck(name = "评论时间")
     private Date time;
+
+    @ApiModelProperty("评论详情")
+    private List<CommentInfoListVo> commentInfoListVo;
 }
