@@ -40,4 +40,53 @@ public class CommetController {
         return commentBiz.listAll(commentQueryParams);
     }
 
+    /**
+     * 商品带图评论
+     *
+     **/
+    @GetMapping(value = "image")
+    @ApiOperation(value = "查询商品带图评论")
+    public Result listImage(CommentQueryParams commentQueryParams) {
+        return commentBiz.listImage(commentQueryParams);
+    }
+
+    /**
+     * 查询好评列表
+     *
+     **/
+    @GetMapping(value = "good")
+    @ApiOperation(value = "查询好评列表")
+    public Result listGood(CommentQueryParams commentQueryParams) {
+        return commentBiz.listGood(commentQueryParams);
+    }
+
+    /**
+     * 查询好评列表
+     *
+     **/
+    @GetMapping(value = "bad")
+    @ApiOperation(value = "查询差评列表")
+    public Result listBad(CommentQueryParams commentQueryParams) {
+        return commentBiz.listBad(commentQueryParams);
+    }
+
+   /**
+     * 查询中评列表
+     *
+     **/
+    @GetMapping(value = "medium")
+    @ApiOperation(value = "查询中评列表")
+    public Result listMedium(CommentQueryParams commentQueryParams) {
+        return commentBiz.listMedium(commentQueryParams);
+    }
+
+    /**
+     * 查询评论人数
+     *
+     **/
+    @GetMapping(value = "listallcount")
+    @ApiOperation(value = "查询评论人数")
+    public Result listAllCount(CommentQueryParams commentQueryParams) {
+        return commentBiz.listAllCount(commentQueryParams);
+    }
 }

@@ -14,4 +14,100 @@
         where product_id = #{productId}
         ORDER BY id
     </select>
+
+    <select id="listGood" parameterType="com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentListVo">
+        SELECT
+        id,
+        order_id AS orderId,
+        product_id AS productId,
+        grade,
+        time
+        FROM
+        s_comment
+        where product_id = #{productId}
+        AND grade IN (4,5)
+        ORDER BY id
+    </select>
+
+    <select id="listMedium" parameterType="com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentListVo">
+        SELECT
+        id,
+        order_id AS orderId,
+        product_id AS productId,
+        grade,
+        time
+        FROM
+        s_comment
+        where product_id = #{productId}
+        AND grade IN (2,3)
+        ORDER BY id
+    </select>
+
+    <select id="listBad" parameterType="com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentListVo">
+        SELECT
+        id,
+        order_id AS orderId,
+        product_id AS productId,
+        grade,
+        time
+        FROM
+        s_comment
+        where product_id = #{productId}
+        AND grade = 1
+        ORDER BY id
+    </select>
+
+    <select id ="allCount" parameterType = "com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentCount">
+        SELECT
+        count(*) AS count,
+        '全部' AS name
+        FROM
+        s_comment
+        WHERE product_id= #{productId}
+    </select>
+    <select id ="goodCount" parameterType = "com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentCount">
+        SELECT
+        count(*) AS count,
+        '好评' AS name
+        FROM
+        s_comment
+        WHERE product_id= #{productId}
+        AND grade IN (4,5)
+    </select>
+    <select id ="mediumCount" parameterType = "com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentCount">
+        SELECT
+        count(*) AS count,
+        '中评' AS name
+        FROM
+        s_comment
+        WHERE product_id= #{productId}
+        AND grade IN (2,3)
+    </select>
+    <select id ="badCount" parameterType = "com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentCount">
+        SELECT
+        count(*) AS count,
+        '差评' AS name
+        FROM
+        s_comment
+        WHERE product_id= #{productId}
+        AND grade = 1
+    </select>
+    <select id ="imageCount" parameterType = "com.logicalthining.endeshop.common.requestVo.comment.CommentQueryParams"
+            resultType="com.logicalthining.endeshop.common.responseVo.comment.CommentCount">
+        SELECT
+        count(*) AS count,
+        '有图' AS name
+        FROM
+        s_comment,s_comment_info
+        WHERE product_id= #{productId}
+        and s_comment.id = s_comment_info.comment_id
+        and images != ''
+    </select>
 </mapper>

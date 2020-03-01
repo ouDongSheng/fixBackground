@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -26,7 +26,7 @@ public class CommentListVo {
     private String productId;
 
     @ApiModelProperty("评论星级")
-    private String grade;
+    private int grade;
 
     @ApiModelProperty("评论时间")
     private Date time;

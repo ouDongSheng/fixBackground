@@ -17,4 +17,6 @@ public interface CommentInfoMapper extends Mapper<CommentInfo> {
 
     List<CommentInfoListVo> getCommentInfoById(@Param("commentIdSet") Set<String> commentIdSet);
 
+    List<CommentInfoListVo> getImageCommentInfoById(@Param("commentIdSet") Set<String> commentIdSet);
+
 }

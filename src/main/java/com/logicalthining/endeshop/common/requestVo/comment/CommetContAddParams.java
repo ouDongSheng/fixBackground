@@ -32,9 +32,9 @@ public class CommetContAddParams {
 
     @ApiModelProperty("评论星级")
     @PropertyCheck(name = "评论星级")
-    private String grade;
+    private int grade;
 
     @ApiModelProperty(value = "评论详情")
     @PropertyCheck(name = "评论详情")
-    private List<CommetContInfoAddParams> commetContInfoAddParamsList;
+    private List<CommentContInfoAddParams> commentContInfoAddParamsList;
 }

@@ -12,7 +12,7 @@ import lombok.Setter;
 @ApiModel
 @Setter
 @Getter
-public class CommetContInfoAddParams {
+public class CommentContInfoAddParams {
     @ApiModelProperty("评论详情id")
     @PropertyCheck(name = "评论详情id")
     private String id;

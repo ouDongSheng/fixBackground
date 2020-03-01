@@ -26,4 +26,24 @@
         <result column="comment_id" jdbcType="VARCHAR" property="commentId"/>
         <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
     </resultMap>
+
+    <select id="getImageCommentInfoById" resultMap="mageCommentInfoResultMapVo">
+    SELECT id, user_id, content, images, comment_id, parent_id
+      FROM s_comment_info
+     <where>
+        <foreach collection="commentIdSet" item="commentId" open="AND s_comment_info.comment_id IN (" close=")" separator=",">
+            #{commentId}
+        </foreach>
+         AND images != ''
+     </where>
+    </select>
+
+    <resultMap id="mageCommentInfoResultMapVo" type="com.logicalthining.endeshop.common.responseVo.comment.CommentInfoListVo">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="images" jdbcType="VARCHAR" property="images"/>
+        <result column="comment_id" jdbcType="VARCHAR" property="commentId"/>
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+    </resultMap>
 </mapper>

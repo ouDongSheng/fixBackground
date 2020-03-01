@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -39,10 +40,10 @@ public class Comment {
     @ApiModelProperty("评论星级")
     @PropertyCheck(name = "评论星级")
     @Column(name = "grade")
-    private String grade;
+    private int grade;
 
     @ApiModelProperty("评论时间")
     @PropertyCheck(name = "评论时间")
     @Column(name = "time")
-    private Date time;
+    private LocalDate time;
 }
