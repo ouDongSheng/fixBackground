@@ -173,7 +173,14 @@ public class Product {
     @Column(name = "sort_number")
     private Integer sortNumber;
 
+    @ApiModelProperty(value = "商品主类")
+    @PropertyCheck(name = "商品主类")
     @Column(name = "master_category")
     private Integer masterCategory;
+
+    @ApiModelProperty(value = "商品类型")
+    @PropertyCheck(name = "商品类型")
+    @Column(name = "product_type")
+    private Integer productType;
 
 }

@@ -62,6 +62,22 @@
     and s_product.master_category = #{masterCategory}
     ORDER BY s_product.sort_number,if(isnull(s_product.sort_number),0,1),s_product.create_time DESC
   </select>
+  <select id="appListByType" parameterType="com.logicalthining.endeshop.common.requestVo.product.AppProductQueryParams"
+          resultType="com.logicalthining.endeshop.common.responseVo.product.AppProductVo">
+    SELECT
+    id,
+    name,
+    small_pic smallPic,
+    delete_status AS deleteStatus,
+    product_type AS productType
+    FROM
+    s_product
+    WHERE delete_status = 0
+      AND shelf_status = 1
+      AND product_type = #{productType}
+      AND master_category = #{masterCategory}
+    ORDER BY s_product.sort_number,if(isnull(s_product.sort_number),0,1),s_product.create_time DESC
+  </select>
   <select id="listProductAwardCountInfo" resultType="com.logicalthining.endeshop.common.responseVo.product.ProductAwardCountInfo">
     SELECT
     s_product.id productId,

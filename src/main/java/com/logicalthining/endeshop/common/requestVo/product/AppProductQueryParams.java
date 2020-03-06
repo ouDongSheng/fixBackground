@@ -17,4 +17,6 @@ import lombok.Setter;
 @Getter
 public class AppProductQueryParams extends PageAbleVo {
     private int masterCategory;
+
+    private int productType;
 }

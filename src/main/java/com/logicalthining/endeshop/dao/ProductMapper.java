@@ -4,6 +4,7 @@ import com.logicalthining.endeshop.common.requestVo.product.AdminProductQueryPar
 import com.logicalthining.endeshop.common.requestVo.product.AppProductQueryParams;
 import com.logicalthining.endeshop.common.responseVo.product.AdminProductListVo;
 import com.logicalthining.endeshop.common.responseVo.product.AppProductListVo;
+import com.logicalthining.endeshop.common.responseVo.product.AppProductVo;
 import com.logicalthining.endeshop.common.responseVo.product.ProductAwardCountInfo;
 import com.logicalthining.endeshop.entity.Product;
 import org.apache.ibatis.annotations.Param;
@@ -37,6 +38,8 @@ public interface ProductMapper extends Mapper<Product> {
      * @return java.util.List<com.logicalthining.endeshop.common.responseVo.product.AppProductListVo>
      **/
     List<AppProductListVo> appListPage(AppProductQueryParams params);
+
+    List<AppProductVo> appListByType(AppProductQueryParams params);
 
 
     /**

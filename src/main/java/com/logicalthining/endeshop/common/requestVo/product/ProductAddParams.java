@@ -73,7 +73,12 @@ public class ProductAddParams {
     @PropertyCheck(name = "商品列表")
     private List<GoodAddParams> goodList;
 
+    @ApiModelProperty(value = "商品主类")
+    @PropertyCheck(name = "商品主类")
     private int masterCategory;
 
+    @ApiModelProperty(value = "商品类型")
+    @PropertyCheck(name = "商品类型")
+    private int productType;
 
 }

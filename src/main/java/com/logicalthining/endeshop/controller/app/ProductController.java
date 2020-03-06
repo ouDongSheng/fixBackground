@@ -42,6 +42,19 @@ public class ProductController {
     }
 
     /**
+     * 分类查询产品
+     *
+     * @param params
+     * @return com.github.chenlijia1111.utils.common.Result
+     * @since 上午 11:27 2019/11/5 0005
+     **/
+    @GetMapping(value = "listbytype")
+    @ApiOperation(value = "按类别查询产品", response = AppProductListVo.class)
+    public Result listByType(AppProductQueryParams params) {
+        return biz.appListByType(params);
+    }
+
+    /**
      * 根据产品Id查询产品详情
      *
      * @param productId 1
@@ -52,6 +65,6 @@ public class ProductController {
     @ApiOperation(value = "根据产品Id查询产品详情", response = AppProductVo.class)
     public Result findByProductId(String productId) {
         return biz.appFindByProductId(productId);
-    }
+}
 
 }

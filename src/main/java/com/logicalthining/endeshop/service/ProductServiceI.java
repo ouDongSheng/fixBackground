@@ -4,10 +4,7 @@ import com.github.chenlijia1111.utils.common.Result;
 import com.logicalthining.endeshop.common.requestVo.product.AppProductQueryParams;
 import com.logicalthining.endeshop.common.requestVo.product.AdminProductQueryParams;
 import com.logicalthining.endeshop.common.responseVo.count.ProductSaleVo;
-import com.logicalthining.endeshop.common.responseVo.product.AdminProductListVo;
-import com.logicalthining.endeshop.common.responseVo.product.AdminProductVo;
-import com.logicalthining.endeshop.common.responseVo.product.AppProductListVo;
-import com.logicalthining.endeshop.common.responseVo.product.ProductAwardCountInfo;
+import com.logicalthining.endeshop.common.responseVo.product.*;
 import com.logicalthining.endeshop.entity.Product;
 
 import java.util.List;
@@ -62,6 +59,9 @@ public interface ProductServiceI {
      * @return java.util.List<com.logicalthining.endeshop.common.responseVo.product.AppProductListVo>
      **/
     List<AppProductListVo> appListPage(AppProductQueryParams params);
+
+    //按类别查询商品
+    List<AppProductVo> appListByType(AppProductQueryParams params);
 
     /**
      * 通过产品id查询产品信息

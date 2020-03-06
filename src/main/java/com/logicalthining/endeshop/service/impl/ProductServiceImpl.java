@@ -123,6 +123,23 @@ public class ProductServiceImpl implements ProductServiceI {
     }
 
     /**
+     * 客户端查询产品列表
+     *
+     * @param params 1
+     * @return java.util.List<com.logicalthining.endeshop.common.responseVo.product.AppProductListVo>
+     * @since 上午 11:49 2019/11/5 0005
+     **/
+    @Override
+    public List<AppProductVo> appListByType(AppProductQueryParams params) {
+        params = PropertyCheckUtil.transferObjectNotNull(params, true);
+
+        List<AppProductVo> list = productMapper.appListByType(params);
+        getAppProductSalesVolume(list);
+
+        return list;
+    }
+
+    /**
      * 通过产品id查询产品信息
      *
      * @param productId 1
@@ -297,6 +314,32 @@ public class ProductServiceImpl implements ProductServiceI {
                     vo.setVipPriceRange(Objects.equals(minVIPPrice, maxVIPPrice) ? (minVIPPrice + "") : (minVIPPrice + "-" + maxVIPPrice));
                 }
 
+                //销量
+                if (Lists.isNotEmpty(productSaleVos)) {
+                    Optional<ProductSaleVo> any = productSaleVos.stream().filter(e -> Objects.equals(e.getProductId(), vo.getId())).findAny();
+                    if (any.isPresent()) {
+                        ProductSaleVo productSaleVo = any.get();
+                        vo.setSalesVolume(productSaleVo.getSalesVolume());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取客户端商品销量
+     *
+     * @param list 1
+     * @return void
+     * @since 上午 9:40 2019/11/4 0004
+     **/
+    private void getAppProductSalesVolume(List<AppProductVo> list) {
+        if (Lists.isNotEmpty(list)) {
+            Set<String> productIdSet = list.stream().map(e -> e.getId()).collect(Collectors.toSet());
+            List<GoodVo> goods = goodsMapper.listByProductIdSet(productIdSet);
+            //查询销量
+            List<ProductSaleVo> productSaleVos = shoppingOrderMapper.listProductSaleVo(productIdSet);
+            for (AppProductVo vo : list) {
                 //销量
                 if (Lists.isNotEmpty(productSaleVos)) {
                     Optional<ProductSaleVo> any = productSaleVos.stream().filter(e -> Objects.equals(e.getProductId(), vo.getId())).findAny();

@@ -74,6 +74,7 @@ public class ProductBiz {
                 setCreateTime(currentTime).
                 setUpdateTime(currentTime).
                 setMasterCategory(params.getMasterCategory()).
+                setProductType(params.getProductType()).
                 setDeleteStatus(BooleanConstant.NO_INTEGER);
 
         //添加产品
@@ -450,6 +451,59 @@ public class ProductBiz {
         List<AppProductListVo> list = productService.appListPage(params);
         PageInfo<AppProductListVo> pageInfo = new PageInfo<>(list);
         return Result.success("查询成功", pageInfo);
+    }
+
+    /**
+     * 按类别查询产品列表
+     *
+     * @param params 1
+     * @return com.github.chenlijia1111.utils.common.Result
+     * @since 上午 11:27 2019/11/5 0005
+     **/
+    public Result appListByType(AppProductQueryParams params) {
+        params = PropertyCheckUtil.transferObjectNotNull(params, true);
+        List<AppProductVo> list = productService.appListByType(params);
+
+        return  appFindByProductSet(list);
+//        return Result.success("查询成功", list);
+    }
+
+    /**
+     * 根据产品集合查询产品详情
+     *
+     * @param productSet
+     * @return com.github.chenlijia1111.utils.common.Result
+     * @since 上午 11:28 2019/11/5 0005
+     **/
+    public Result appFindByProductSet(List<AppProductVo> list) {
+        Set<String> productSet = list.stream().map(e -> e.getId()).collect(Collectors.toSet());
+        StringBuilder image = new StringBuilder();
+        for (AppProductVo appProductVo: list) {
+            if (appProductVo.getSmallPic().indexOf(",")!= -1) {
+                image.append(appProductVo.getSmallPic().substring(0, appProductVo.getSmallPic().indexOf(","))).append(",");
+            }else
+                image.append(appProductVo.getSmallPic()).append(",");
+        }
+
+        list.get(0).setSmallPic(image.toString().substring(0,image.toString().length() - 1));
+        AppProductVo productVo = new AppProductVo();
+        BeanUtils.copyProperties(list.get(0), productVo);
+
+        //查询产品的规格信息
+        List<ProductSpecVo> productSpecVoList = productSpecService.listProductSpecVoByProductIdSet(productSet);
+        productVo.setProductSpecVoList(productSpecVoList);
+
+        //查询产品的商品信息
+        List<GoodVo> goodVoList = goodsService.listByProductIdSet(productSet);
+        productVo.setGoodVoList(goodVoList);
+
+        //查询商品的销量,后面再做
+        List<ProductSaleVo> productSaleVos = productService.listProductSaleVo(productSet);
+        if(Lists.isNotEmpty(productSaleVos)){
+            productVo.setSalesVolume(productSaleVos.get(0).getSalesVolume());
+        }
+
+        return Result.success("查询成功", productVo);
     }
 
     /**
