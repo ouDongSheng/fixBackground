@@ -447,11 +447,11 @@ public class ShoppingOrderBiz {
             String groupId = shoppingOrder.getGroupId();
 
             //首先判断订单是不是分享下的单,如果是,需要绑定上下级关系
-            checkShareOrder(Integer.valueOf(custom), groupId);
+//            checkShareOrder(Integer.valueOf(custom), groupId);
 
 //        //然后判断支付金额有没有到达会员支付金额,如果达到了就升级为会员
 //        //如果原来的角色是普通用户,第一次升级为会员,那么他的直接上级可以获得分享奖
-            checkUpgradeVIP(Integer.valueOf(custom), payable, groupId);
+//            checkUpgradeVIP(Integer.valueOf(custom), payable, groupId);
 //
 //          //校验是否满足复购奖
 //            checkRepeatAward(Integer.valueOf(custom), payable, groupId);
@@ -1358,9 +1358,9 @@ public class ShoppingOrderBiz {
 
         //判断当前用户是否绑定了微信
         ThirdPartyLogin thirdPartyLogin = thirdPartyLoginService.findByUserIdAndType(optional.get().getId(), 1);
-        if (Objects.isNull(thirdPartyLogin) && StringUtils.isEmpty(openId)) {
-            return Result.failure("该用户未绑定微信,请先绑定微信");
-        }
+//        if (Objects.isNull(thirdPartyLogin) && StringUtils.isEmpty(openId)) {
+//            return Result.failure("该用户未绑定微信,请先绑定微信");
+//        }
 
         //查询订单金额
         ShoppingOrder shoppingOrderCondition = new ShoppingOrder().setGroupId(groupId);
