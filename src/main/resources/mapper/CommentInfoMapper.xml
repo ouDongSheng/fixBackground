@@ -9,13 +9,16 @@
     </insert>
 
     <select id="getCommentInfoById" resultMap="CommentInfoResultMapVo">
-    SELECT id, user_id, content, images, comment_id, parent_id
-      FROM s_comment_info
-     <where>
-        <foreach collection="commentIdSet" item="commentId" open="AND s_comment_info.comment_id IN (" close=")" separator=",">
-            #{commentId}
-        </foreach>
-     </where>
+        SELECT s_comment_info.id, user_id, content, images, comment_id, parent_id,account,head_image
+        FROM s_comment_info
+        inner JOIN s_user
+        on s_comment_info.user_id = s_user.id
+        <where>
+            <foreach collection="commentIdSet" item="commentId" open="AND s_comment_info.comment_id IN (" close=")"
+                     separator=",">
+                #{commentId}
+            </foreach>
+        </where>
     </select>
 
     <resultMap id="CommentInfoResultMapVo" type="com.logicalthining.endeshop.common.responseVo.comment.CommentInfoListVo">
@@ -25,6 +28,8 @@
         <result column="images" jdbcType="VARCHAR" property="images"/>
         <result column="comment_id" jdbcType="VARCHAR" property="commentId"/>
         <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+        <result column="account" jdbcType="VARCHAR" property="account"/>
+        <result column="head_image" jdbcType="VARCHAR" property="headImage"/>
     </resultMap>
 
     <select id="getImageCommentInfoById" resultMap="mageCommentInfoResultMapVo">

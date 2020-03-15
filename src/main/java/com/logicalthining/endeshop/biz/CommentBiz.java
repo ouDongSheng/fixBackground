@@ -39,7 +39,7 @@ public class CommentBiz {
         }
 
         Date currentTime = new Date();
-        //TODO 订单id ?
+
         Comment comment = new Comment()
                 .setId(params.getId())
                 .setOrderId(params.getOrderId())

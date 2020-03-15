@@ -465,7 +465,6 @@ public class ProductBiz {
         List<AppProductVo> list = productService.appListByType(params);
 
         return  appFindByProductSet(list);
-//        return Result.success("查询成功", list);
     }
 
     /**

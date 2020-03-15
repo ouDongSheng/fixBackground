@@ -20,4 +20,8 @@ public class CommentInfoListVo {
     private String commentId;
 
     private String parentId;
+
+    private String account;
+
+    private String headImage;
 }

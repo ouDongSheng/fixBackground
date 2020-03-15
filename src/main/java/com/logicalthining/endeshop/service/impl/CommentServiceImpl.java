@@ -37,6 +37,7 @@ public class CommentServiceImpl implements CommentServiceI {
     @Override
     public List<CommentListVo> listAll(CommentQueryParams params) {
         params = PropertyCheckUtil.transferObjectNotNull(params, true);
+
         List<CommentListVo> commentListVos = commentMapper.listAll(params);     //评价
 
         Set commentIdSet = new HashSet<>();
@@ -82,7 +83,8 @@ public class CommentServiceImpl implements CommentServiceI {
     @Override
     public List<CommentListVo> listGood(CommentQueryParams params) {
         params = PropertyCheckUtil.transferObjectNotNull(params, true);
-        List<CommentListVo> commentListVos = commentMapper.listGood(params);     //评价
+
+        List<CommentListVo> commentListVos = commentMapper.listGood(params); //获取好评
 
         Set commentIdSet = new HashSet<>();
         for (CommentListVo commentListVo : commentListVos) {
