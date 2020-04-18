@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 /**
  * 产品表
  *
- * @author chenLiJia
  * @since 2019-11-01 13:46:54
  **/
 @Service
@@ -48,7 +47,6 @@ public class ProductBiz {
      * 添加商品
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:18 2019/11/1 0001
      **/
     @Transactional
@@ -470,7 +468,7 @@ public class ProductBiz {
     /**
      * 根据产品集合查询产品详情
      *
-     * @param productSet
+     * @param list
      * @return com.github.chenlijia1111.utils.common.Result
      * @since 上午 11:28 2019/11/5 0005
      **/
@@ -487,6 +485,10 @@ public class ProductBiz {
         list.get(0).setSmallPic(image.toString().substring(0,image.toString().length() - 1));
         AppProductVo productVo = new AppProductVo();
         BeanUtils.copyProperties(list.get(0), productVo);
+
+        //取商品类一个商品的详情
+        Product product = productService.findByProductId(list.get(0).getId());
+        productVo.setContent(product.getContent());
 
         //查询产品的规格信息
         List<ProductSpecVo> productSpecVoList = productSpecService.listProductSpecVoByProductIdSet(productSet);
@@ -508,7 +510,7 @@ public class ProductBiz {
     /**
      * 根据产品Id查询产品详情
      *
-     * @param productId 1
+     * @param productId
      * @return com.github.chenlijia1111.utils.common.Result
      * @since 上午 11:28 2019/11/5 0005
      **/
@@ -542,7 +544,7 @@ public class ProductBiz {
         List<GoodVo> goodVoList = goodsService.listByProductIdSet(Sets.asSets(productId));
         productVo.setGoodVoList(goodVoList);
 
-        //查询商品的销量,后面再做
+        //TODO 查询商品的销量,后面再做
         List<ProductSaleVo> productSaleVos = productService.listProductSaleVo(Sets.asSets(productId));
         if(Lists.isNotEmpty(productSaleVos)){
             productVo.setSalesVolume(productSaleVos.get(0).getSalesVolume());

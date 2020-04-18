@@ -12,7 +12,6 @@ import java.util.Map;
 /**
  * 系统常量
  *
- * @author chenlijia
  * @since 上午 10:51 2019/8/5 0005
  **/
 public class Constants {
@@ -72,10 +71,10 @@ public class Constants {
             build();
 
     //微信公众号配置信息
-    public static final String WX_APP_ID = "wx1eb341844faf9f84";
+    public static final String WX_APP_ID = "wxefb12dedbfe8fe53";
 
     //微信公众号配置信息
-    public static final String WX_APP_SECRET = "28312f2e0a739c51e884303c37c010eb";
+    public static final String WX_APP_SECRET = "42b97390876ce9ca4bb215d6d7164ef5";
 
     //微信支付商户id
     public static final String WX_MCHID = "1562837811";

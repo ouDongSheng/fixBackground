@@ -1,5 +1,12 @@
 package com.logicalthining.endeshop.controller.system;
 
+import com.aliyuncs.CommonRequest;
+import com.aliyuncs.CommonResponse;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
 import com.github.chenlijia1111.utils.common.Result;
 import com.github.chenlijia1111.utils.common.constant.RegConstant;
 import com.github.chenlijia1111.utils.core.RandomUtil;
@@ -28,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.aliyuncs.DefaultAcsClient;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -42,7 +51,6 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * @author chenlijia
  * @Description 系统层级控制器
  * @since 下午 5:05 2018/11/10 0010
  **/
@@ -289,7 +297,9 @@ public class SystemController {
         //生成验证码
         String validCode = RandomUtil.createRandomCode(6);
         //发送验证码
-        Result result = sendMsg(SMSType.LOGIN, telephone, validCode);
+//        Result result = sendMsg(SMSType.LOGIN, telephone, validCode);
+        Result result = sendAliyunMsg(telephone, validCode);
+
         if (result.getSuccess()) {
             //存取验证码到数据库中用于后面的校验
             Date currentTime = new Date();
@@ -367,7 +377,6 @@ public class SystemController {
      * @param smsType   验证码类型
      * @param telephone 手机号
      * @param code      验证码
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 上午 11:30 2019/11/14 0014
      **/
     private static Result sendMsg(SMSType smsType, String telephone, String code) {
@@ -400,5 +409,43 @@ public class SystemController {
         return Result.failure(map.get("msg").toString());
     }
 
+    /**
+     * 阿里云发送短信验证码
+     *
+     * @param telephone 手机号
+     * @param code      验证码
+     **/
+    private static Result sendAliyunMsg(String telephone, String code) {
+        if (StringUtils.isEmpty(telephone) || !Pattern.matches(RegConstant.MOBILE_PHONE, telephone)) {
+            return Result.failure("手机号不合法");
+        }
 
+        if (StringUtils.isEmpty(code)) {
+            return Result.failure("验证码为空");
+        }
+
+        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAI4FgJFHkK8FEjb4Ey4Ywg", "qZOUNM7CF844BoyAgvf0zGlaUgbRdD");
+        IAcsClient client = new DefaultAcsClient(profile);
+
+        CommonRequest request = new CommonRequest();
+        request.setSysMethod(MethodType.POST);
+        request.setSysDomain("dysmsapi.aliyuncs.com");
+        request.setSysVersion("2017-05-25");
+        request.setSysAction("SendSms");
+        request.putQueryParameter("RegionId", "cn-hangzhou");
+        request.putQueryParameter("PhoneNumbers", telephone);
+        request.putQueryParameter("SignName", "大图环保健康服务");
+        request.putQueryParameter("TemplateCode", "SMS_187240845");
+        request.putQueryParameter("TemplateParam", "{code:\"" + code + "\"}");
+        try {
+            //TODO 还要添加报错
+            CommonResponse response = client.getCommonResponse(request);
+            System.out.println(response.getData());
+            return Result.success("发送成功");
+        } catch (ServerException e) {
+            return Result.failure(e.toString());
+        } catch (ClientException e) {
+            return Result.failure(e.toString());
+        }
+    }
 }

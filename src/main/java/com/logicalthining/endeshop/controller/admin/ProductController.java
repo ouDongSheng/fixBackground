@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * 产品表
  *
- * @author chenLiJia
  * @since 2019-11-01 13:46:54
  **/
 @RestController
@@ -31,7 +30,6 @@ public class ProductController {
      * 添加商品
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:18 2019/11/1 0001
      **/
     @PostMapping(value = "add")
@@ -44,7 +42,6 @@ public class ProductController {
      * 修改商品
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:18 2019/11/1 0001
      **/
     @PostMapping(value = "update")
@@ -58,7 +55,6 @@ public class ProductController {
      * 逻辑删除
      *
      * @param productId 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:19 2019/11/1 0001
      **/
     @PostMapping(value = "delete")
@@ -71,7 +67,6 @@ public class ProductController {
      * 列表查询产品
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:19 2019/11/1 0001
      **/
     @GetMapping(value = "listPage")
@@ -84,7 +79,6 @@ public class ProductController {
      * 修改上架状态
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:20 2019/11/1 0001
      **/
     @PostMapping(value = "shelfStatus/update")
@@ -98,7 +92,6 @@ public class ProductController {
      * 编辑排序值
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 上午 9:27 2019/11/4 0004
      **/
     @PostMapping(value = "sortNumber/update")
@@ -111,7 +104,6 @@ public class ProductController {
      * 通过产品Id查询商品详情
      *
      * @param productId 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 上午 9:21 2019/11/5 0005
      **/
     @GetMapping(value = "findByProductId")
@@ -125,7 +117,6 @@ public class ProductController {
      * 批量修改产品上下架状态
      *
      * @param params 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:50 2019/11/13 0013
      **/
     @PostMapping(value = "shelfStatus/update/batch")
@@ -138,7 +129,6 @@ public class ProductController {
      * 批量删除产品
      *
      * @param productIdList 1
-     * @return com.github.chenlijia1111.utils.common.Result
      * @since 下午 2:50 2019/11/13 0013
      **/
     @PostMapping(value = "delete/batch")
